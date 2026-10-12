@@ -1,0 +1,45 @@
+# Optional services to play with the v14 client on a modern browser through
+# DirPlayer (https://github.com/igorlira/dirplayer-rs), an open-source
+# Shockwave emulator. Prepare the client files first:
+#
+#   ./tools/linux/setup-client.sh
+#   docker compose -f compose.yml -f compose.client.yml up -d
+#
+# Then open http://localhost:${CLIENT_WEB_PORT}/ in Firefox or Chrome.
+
+x-websockify: &websockify
+  build:
+    dockerfile_inline: |
+      FROM python:3.13-alpine
+      RUN pip install --no-cache-dir websockify==0.13.0
+  restart: unless-stopped
+  depends_on:
+    - kepler
+
+services:
+  # Static web server for the DCRs, gamedata and the loader page.
+  client-web:
+    image: nginx:1.28-alpine
+    container_name: kepler-client-web
+    restart: unless-stopped
+    volumes:
+      - ./client/www:/usr/share/nginx/html:ro
+      - ./tools/linux/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${PUBLISH_IP:-0.0.0.0}:${CLIENT_WEB_PORT:-8087}:80"
+
+  # Browsers cannot open raw TCP sockets, so DirPlayer talks WebSocket.
+  # websockify turns that WebSocket back into the TCP connection Kepler expects.
+  client-ws-game:
+    <<: *websockify
+    container_name: kepler-client-ws-game
+    command: ["websockify", "0.0.0.0:${WS_GAME_PORT:-12331}", "kepler:${SERVER_PORT}"]
+    ports:
+      - "${PUBLISH_IP:-0.0.0.0}:${WS_GAME_PORT:-12331}:${WS_GAME_PORT:-12331}"
+
+  client-ws-mus:
+    <<: *websockify
+    container_name: kepler-client-ws-mus
+    command: ["websockify", "0.0.0.0:${WS_MUS_PORT:-12332}", "kepler:${MUS_PORT}"]
+    ports:
+      - "${PUBLISH_IP:-0.0.0.0}:${WS_MUS_PORT:-12332}:${WS_MUS_PORT:-12332}"

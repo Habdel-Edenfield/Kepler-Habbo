@@ -26,3 +26,5 @@ Kepler-Server/src/main/java/META-INF/MANIFEST.MF
 *.log
 .env
 .vscode
+# Client files (Sulake DCRs, DirPlayer) downloaded by tools/linux/setup-client.sh
+/client/

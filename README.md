@@ -48,7 +48,7 @@ To be honest, this server doesn't require much. I'd argue that the MariaDB serve
 
 # Installation
 
-Install MariaDB server, connect to the database server and import Kepler.sql (located in /tools/Kepler.sql).
+Install MariaDB server, connect to the database server and import kepler.sql (located in /tools/kepler.sql).
 
 Download the latest development build from the [releases page](https://github.com/Quackster/Kepler/releases) and rename the files to remove the short build hash version, for convenience. 
 
@@ -63,6 +63,8 @@ As for the client, you can find version 14 DCRs: https://github.com/Quackster/Ke
 Setup the loader files on a web server, and once Kepler is started, ensure the loader is connecting to the correct IP and ports for both the standard connection and MUS connection. The MUS connection is used for the camera.
 
 # Docker installation
+
+On Linux, [docs/LINUX.md](docs/LINUX.md) walks through the whole setup, including running the v14 client in a modern browser.
 
 Install [Docker](https://docs.docker.com/engine/install/) and [git](https://git-scm.com/downloads) (optional) on your device.
 

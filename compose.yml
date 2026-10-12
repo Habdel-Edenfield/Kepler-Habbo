@@ -9,8 +9,8 @@ services:
       mariadb:
         condition: service_healthy
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
-      - "${MUS_PORT}:${MUS_PORT}"
+      - "${PUBLISH_IP:-0.0.0.0}:${SERVER_PORT}:${SERVER_PORT}"
+      - "${PUBLISH_IP:-0.0.0.0}:${MUS_PORT}:${MUS_PORT}"
   mariadb:
     image: mariadb:11.4
     container_name: kepler-mariadb
